@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: chaos-oracle-backend
+    env: python
+    buildCommand: pip install -r backend_requirements.txt && pip install crewai[litellm,tools] tavily-python
+    startCommand: python backend_server.py
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: PORT
+        value: 8000
