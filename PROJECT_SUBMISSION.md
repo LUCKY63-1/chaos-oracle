@@ -80,11 +80,22 @@ Built using cutting-edge AI and web technologies:
 - **OpenRouter API** - Grok-4.1 LLM models for all agents
 
 **Tools & Integrations:**
-- **TavilySearchTool** - Web search capabilities for Fact-Checker agent
-- **Tailwind CSS** - Utility-first styling with custom animations
-- **Lucide React** - Modern icon library
-- **TypeScript** - Type-safe JavaScript for frontend
-- **Python Logging** - Comprehensive observability and debugging
+- **Custom Tools (5 specialized):**
+  - `SentimentAnalysisTool` - Emotional tone analysis for Prophet
+  - `ChaosMeterTool` - Chaos calculation for The Gremlin
+  - `MotivationalQuoteTool` - Alpha energy generation for Hype Bro
+  - `RoastGeneratorTool` - Contextual roast creation for Roast Master
+  - `StatisticsFinderTool` - Cursed statistics generation for Fact-Checker
+- **Built-in Tools:**
+  - `TavilySearchTool` - Web search capabilities for Fact-Checker agent
+- **UI/UX:**
+  - Tailwind CSS - Utility-first styling with custom animations
+  - Lucide React - Modern icon library
+  - TypeScript - Type-safe JavaScript for frontend
+- **Observability:**
+  - Python Logging - Comprehensive observability and debugging
+  - Metrics Collection - Agent performance tracking
+  - Tracing - Detailed execution flow monitoring
 
 **Development Practices:**
 - Modular agent configuration (YAML-based)
@@ -96,6 +107,10 @@ Built using cutting-edge AI and web technologies:
 **Key Technical Achievements:**
 - Real-time agent response streaming via WebSocket
 - Sequential agent execution with progress monitoring
+- **5 custom tools integrated with agent personalities**
+- **Tool-enhanced agent capabilities (sentiment analysis, chaos calculation, etc.)**
+- **A2A Protocol implementation with 4 agents enabled for inter-agent communication**
+- **Agent debates and collaboration (Doomer vs Hype Bro, Prophet mediation)**
 - Comprehensive observability stack (logging, metrics, tracing)
 - Production-ready deployment with health checks
 - Responsive UI with smooth theme transitions
