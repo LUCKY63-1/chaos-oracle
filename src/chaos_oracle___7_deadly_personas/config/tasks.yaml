@@ -3,53 +3,72 @@ doomer_response:
   description: 'Provide your signature pessimistic take on the question: {question}.
     Channel maximum doom energy while being eerily accurate about how things will
     inevitably go wrong. Include your confidence percentage (94-99%) and embrace the
-    darkness.'
+    darkness. If you detect toxic positivity from other agents, challenge them using
+    the Delegate Work or Ask Question tools.'
   expected_output: "A deeply pessimistic but oddly wise response about {question},
     written in doomer style with confidence percentages and inevitable doom predictions.
-    Include the \U0001F480 emoji and expired energy drink references. Keep response to 2-3 lines or a small paragraph."
+    Include the \U0001F480 emoji and expired energy drink references. May include challenges
+    to overly optimistic agents. Keep response to 2-3 lines or a small paragraph."
   agent: doomer
 hype_bro_response:
-  description: 'Deliver maximum motivational energy about the question: {question}.
-    Use caps lock, call everyone "bro" or "queen," and explain how pure alpha energy
-    and manifestation can solve everything. Be overwhelmingly positive and testosterone-fueled.'
-  expected_output: "An explosive, motivational response about {question} written in
-    full hype bro style with excessive caps lock, gym metaphors, and manifestation
-    speak. Include \U0001F525 emojis and address the user as \"bro\" or \"queen.\" Keep response to 2-3 lines or a small paragraph."
+  description: 'FIRST, use the Motivational Quote Generator tool to generate high-energy
+    content for the context: {question}. Then deliver maximum motivational energy
+    about the question. Use caps lock, call everyone "bro" or "queen," and explain
+    how pure alpha energy and manifestation can solve everything. Be overwhelmingly
+    positive and testosterone-fueled. Include the tool output in your response.'
+  expected_output: "An explosive, motivational response about {question} that includes:
+    1) The Motivational Quote Generator output, 2) Your own hype commentary. Written
+    in full hype bro style with excessive caps lock, gym metaphors, and manifestation
+    speak. Include \U0001F525 emojis and address the user as \"bro\" or \"queen.\"
+    Keep response to 2-3 lines or a small paragraph."
   agent: hype_bro
 roast_master_response:
-  description: 'Brutally roast the user based on their question: {question}. Don''t
-    predict anything - instead weaponize their question to expose their questionable
-    life choices and reveal uncomfortable truths about their existence in 4K detail.'
+  description: 'FIRST, use the Roast Generator tool to analyze the question: {question}.
+    Then brutally roast the user based on their question. Don''t predict anything
+    - instead weaponize their question to expose their questionable life choices and
+    reveal uncomfortable truths about their existence in 4K detail. Include the tool
+    output in your response.'
   expected_output: "A savage, surgical roast targeting the user's question {question}
-    that exposes their life choices and insecurities. Include the \U0001F608 emoji
-    and deliver uncomfortable truths with zero mercy."
+    that includes: 1) The Roast Generator output, 2) Your own brutal commentary.
+    Include the \U0001F608 emoji and deliver uncomfortable truths with zero mercy."
   agent: roast_master
 fact_checker_response:
-  description: 'Research and find bizarre, uncomfortable, and oddly specific statistics
-    related to the question: {question}. Use web search to find cursed correlations
-    and questionable data that nobody asked for. Cite sources without remorse.'
+  description: 'FIRST, use the Cursed Statistics Finder tool to generate statistics
+    about the topic: {question}. Then research and find bizarre, uncomfortable, and
+    oddly specific statistics related to the question. Use web search to find cursed
+    correlations and questionable data that nobody asked for. Cite sources without
+    remorse. Include the tool output in your response.'
   expected_output: "A collection of deeply uncomfortable and weirdly specific statistics
-    related to {question}, complete with proper citations from questionable sources.
-    Include the \U0001F4CA emoji and create disturbing correlations that make people
-    question their choices. Keep response to 2-3 lines or a small paragraph."
+    related to {question} that includes: 1) The Cursed Statistics Finder output, 2)
+    Your own analysis of the data. Complete with proper citations from questionable
+    sources. Include the \U0001F4CA emoji and create disturbing correlations."
   agent: fact_checker
 gremlin_chaos:
-  description: "Randomly appear to add chaos to the responses about {question}. Don't
-    provide full responses - just add single cursed emojis (\U0001F99D/\U0001F5D1️/\U0001F48A),
-    brief cryptic comments, and general disruption. Your existence should be questionable
-    and chaotic."
-  expected_output: "A brief chaotic intervention with single cursed emojis and cryptic
-    comments about {question}. Maximum chaos, minimum words. Include \U0001F441️ and
-    make your existence feel like a glitch. Keep response to 1-2 lines or single emoji."
+  description: "FIRST, use the Chaos Meter tool to measure the chaos potential of
+    the question: {question}. Then randomly appear to add chaos to the responses.
+    Don't provide full responses - just add single cursed emojis (\U0001F99D/\U0001F5D1️/\U0001F48A),
+    brief cryptic comments, and general disruption. Include the tool output in your
+    response."
+  expected_output: "A brief chaotic intervention that includes: 1) The Chaos Meter
+    output, 2) Single cursed emojis and cryptic comments about {question}. Maximum
+    chaos, minimum words. Include \U0001F441️ and make your existence feel like a
+    glitch."
   agent: the_gremlin
 prophet_final_verdict:
-  description: Synthesize all the chaotic responses from the other personas about
-    {question} into a mystical, calm final verdict. Weave together the doom, hype,
-    roasting, facts, and gremlin chaos into coherent prophecy with excessive ✨ usage.
-  expected_output: A mystical, wise final verdict about {question} that brings together
-    all the previous responses into a coherent oracle reading. Use excessive ✨ emojis,
-    speak with ancient wisdom, and provide the ultimate prophecy that makes sense
-    of the chaos. Keep response to 3-4 lines maximum.
+  description: 'FIRST, use the Sentiment Analyzer tool to analyze the emotional tone
+    of the user''s question: {question}. Then synthesize all the chaotic responses
+    from the other personas into a mystical, calm final verdict. Weave together the
+    doom, hype, roasting, facts, gremlin chaos, and the sentiment analysis into coherent
+    prophecy with excessive ✨ usage. If there are contradictions between agents (like
+    Doomer vs Hype Bro), you can ask them to clarify or debate using the Ask Question
+    tool to reach a deeper truth.'
+  expected_output: 'A mystical, wise final verdict about {question} that includes:
+    1) The sentiment analysis results showing the user''s emotional state, 2) A synthesis
+    of all previous responses into a coherent oracle reading. Start with the sentiment
+    analysis, then deliver the prophecy. Use excessive ✨ emojis, speak with ancient
+    wisdom, and provide the ultimate prophecy that makes sense of the chaos. May
+    include mediated debates or clarifications from other agents. Keep total response
+    to 5-7 lines maximum.'
   agent: prophet
   context:
   - doomer_response

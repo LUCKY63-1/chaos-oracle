@@ -6,6 +6,15 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import TavilySearchTool
 
+# Import custom tools
+from .tools import (
+    SentimentAnalysisTool,
+    ChaosMeterTool,
+    MotivationalQuoteTool,
+    RoastGeneratorTool,
+    StatisticsFinderTool
+)
+
 load_dotenv()
 
 @CrewBase
@@ -22,12 +31,12 @@ class ChaosOracle7DeadlyPersonasCrew:
             reasoning=False,
             max_reasoning_attempts=None,
             inject_date=True,
-            allow_delegation=False,
+            allow_delegation=True,  # A2A: Can challenge Hype Bro's optimism
             max_iter=25,
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/tngtech/tng-r1t-chimera:free",
+                model="openrouter/x-ai/grok-4.1-fast:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -38,16 +47,16 @@ class ChaosOracle7DeadlyPersonasCrew:
     def hype_bro(self) -> Agent:
         return Agent(
             config=self.agents_config["hype_bro"],
-            tools=[],
+            tools=[MotivationalQuoteTool()],
             reasoning=False,
             max_reasoning_attempts=None,
             inject_date=True,
-            allow_delegation=False,
+            allow_delegation=True,  # A2A: Can counter Doomer's pessimism
             max_iter=25,
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/tngtech/tng-r1t-chimera:free",
+                model="openrouter/x-ai/grok-4.1-fast:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -58,16 +67,16 @@ class ChaosOracle7DeadlyPersonasCrew:
     def roast_master(self) -> Agent:
         return Agent(
             config=self.agents_config["roast_master"],
-            tools=[],
+            tools=[RoastGeneratorTool()],
             reasoning=False,
             max_reasoning_attempts=None,
             inject_date=True,
-            allow_delegation=False,
+            allow_delegation=True,  # A2A: Can roast other agents' responses
             max_iter=25,
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/tngtech/tng-r1t-chimera:free",
+                model="openrouter/x-ai/grok-4.1-fast:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -78,7 +87,7 @@ class ChaosOracle7DeadlyPersonasCrew:
     def fact_checker(self) -> Agent:
         return Agent(
             config=self.agents_config["fact_checker"],
-            tools=[TavilySearchTool()],
+            tools=[TavilySearchTool(), StatisticsFinderTool()],
             reasoning=False,
             max_reasoning_attempts=None,
             inject_date=True,
@@ -87,7 +96,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/tngtech/tng-r1t-chimera:free",
+                model="openrouter/x-ai/grok-4.1-fast:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -98,7 +107,7 @@ class ChaosOracle7DeadlyPersonasCrew:
     def the_gremlin(self) -> Agent:
         return Agent(
             config=self.agents_config["the_gremlin"],
-            tools=[],
+            tools=[ChaosMeterTool()],
             reasoning=False,
             max_reasoning_attempts=None,
             inject_date=True,
@@ -107,7 +116,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/tngtech/tng-r1t-chimera:free",
+                model="openrouter/x-ai/grok-4.1-fast:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -118,16 +127,16 @@ class ChaosOracle7DeadlyPersonasCrew:
     def prophet(self) -> Agent:
         return Agent(
             config=self.agents_config["prophet"],
-            tools=[],
+            tools=[SentimentAnalysisTool()],
             reasoning=False,
             max_reasoning_attempts=None,
             inject_date=True,
-            allow_delegation=False,
+            allow_delegation=True,  # A2A: Can ask agents to clarify or debate
             max_iter=25,
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/tngtech/tng-r1t-chimera:free",
+                model="openrouter/x-ai/grok-4.1-fast:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
