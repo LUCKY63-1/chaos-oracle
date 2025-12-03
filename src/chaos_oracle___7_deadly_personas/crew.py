@@ -36,7 +36,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/x-ai/grok-4.1-fast:free",
+                model="openrouter/amazon/nova-2-lite-v1:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -56,7 +56,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/x-ai/grok-4.1-fast:free",
+                model="openrouter/amazon/nova-2-lite-v1:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -76,7 +76,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/x-ai/grok-4.1-fast:free",
+                model="openrouter/amazon/nova-2-lite-v1:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -96,7 +96,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/x-ai/grok-4.1-fast:free",
+                model="openrouter/amazon/nova-2-lite-v1:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -116,7 +116,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/x-ai/grok-4.1-fast:free",
+                model="openrouter/amazon/nova-2-lite-v1:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
@@ -136,7 +136,7 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/x-ai/grok-4.1-fast:free",
+                model="openrouter/amazon/nova-2-lite-v1:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
