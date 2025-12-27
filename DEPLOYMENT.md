@@ -35,7 +35,7 @@
    - Select "Deploy from GitHub repo"
    - Choose your repo
    - Add environment variables:
-     - `OPENROUTER_API_KEY`
+     - `GROQ_API_KEY`
      - `TAVILY_API_KEY`
    - Railway will auto-detect and deploy
    - Get your backend URL (e.g., `https://your-app.railway.app`)
@@ -125,7 +125,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - GROQ_API_KEY=${GROQ_API_KEY}
       - TAVILY_API_KEY=${TAVILY_API_KEY}
 
   frontend:
@@ -144,7 +144,7 @@ services:
 
 ### Required for Backend
 ```env
-OPENROUTER_API_KEY=your_key_here
+GROQ_API_KEY=your_key_here
 TAVILY_API_KEY=your_key_here
 ```
 

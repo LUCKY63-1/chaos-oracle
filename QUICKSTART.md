@@ -63,7 +63,7 @@ start_frontend.bat
 
 Create `.env` file in project root:
 ```env
-OPENROUTER_API_KEY=your_openrouter_key_here
+GROQ_API_KEY=your_openrouter_key_here
 TAVILY_API_KEY=your_tavily_key_here
 ```
 

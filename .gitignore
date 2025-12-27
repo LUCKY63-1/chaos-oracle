@@ -71,3 +71,5 @@ htmlcov/
 .temp/
 temp/
 tmp/
+kombai-instructions.txt
+uv.lock

@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from datetime import datetime
 import threading
-import queue
+
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -65,47 +65,51 @@ class MetricsCollector:
     """Collect and track agent performance metrics"""
     
     def __init__(self):
+        self.lock = threading.Lock()
         self.agent_metrics = {}
         self.total_requests = 0
         self.total_responses = 0
         
     def start_agent(self, agent_name: str):
         """Record agent start time"""
-        if agent_name not in self.agent_metrics:
-            self.agent_metrics[agent_name] = {
-                'count': 0,
-                'total_time': 0,
-                'avg_time': 0,
-                'last_execution': None
-            }
-        
-        self.agent_metrics[agent_name]['start_time'] = time.time()
+        with self.lock:
+            if agent_name not in self.agent_metrics:
+                self.agent_metrics[agent_name] = {
+                    'count': 0,
+                    'total_time': 0,
+                    'avg_time': 0,
+                    'last_execution': None
+                }
+            
+            self.agent_metrics[agent_name]['start_time'] = time.time()
         logger.info(f"📊 METRIC: Agent '{agent_name}' started")
         
     def end_agent(self, agent_name: str):
         """Record agent completion and calculate metrics"""
-        if agent_name in self.agent_metrics:
-            start_time = self.agent_metrics[agent_name].get('start_time')
-            if start_time:
-                duration = time.time() - start_time
-                self.agent_metrics[agent_name]['count'] += 1
-                self.agent_metrics[agent_name]['total_time'] += duration
-                self.agent_metrics[agent_name]['avg_time'] = (
-                    self.agent_metrics[agent_name]['total_time'] / 
-                    self.agent_metrics[agent_name]['count']
-                )
-                self.agent_metrics[agent_name]['last_execution'] = duration
+        with self.lock:
+            if agent_name in self.agent_metrics:
+                start_time = self.agent_metrics[agent_name].get('start_time')
+                if start_time:
+                    duration = time.time() - start_time
+                    self.agent_metrics[agent_name]['count'] += 1
+                    self.agent_metrics[agent_name]['total_time'] += duration
+                    self.agent_metrics[agent_name]['avg_time'] = (
+                        self.agent_metrics[agent_name]['total_time'] / 
+                        self.agent_metrics[agent_name]['count']
+                    )
+                    self.agent_metrics[agent_name]['last_execution'] = duration
                 
                 logger.info(f"📊 METRIC: Agent '{agent_name}' completed in {duration:.2f}s")
                 logger.info(f"📊 METRIC: Average time for '{agent_name}': {self.agent_metrics[agent_name]['avg_time']:.2f}s")
                 
     def get_metrics(self):
         """Get all collected metrics"""
-        return {
-            'total_requests': self.total_requests,
-            'total_responses': self.total_responses,
-            'agent_metrics': self.agent_metrics
-        }
+        with self.lock:
+            return {
+                'total_requests': self.total_requests,
+                'total_responses': self.total_responses,
+                'agent_metrics': self.agent_metrics.copy()
+            }
 
 metrics = MetricsCollector()
 
@@ -154,16 +158,19 @@ NAME_MAPPING = {
 class ConnectionManager:
     def __init__(self):
         self.active_connections: List[WebSocket] = []
+        self._lock = threading.Lock()
 
     async def connect(self, websocket: WebSocket):
         await websocket.accept()
-        self.active_connections.append(websocket)
-        logger.info(f"✅ Client connected. Total: {len(self.active_connections)}")
+        with self._lock:
+            self.active_connections.append(websocket)
+            logger.info(f"✅ Client connected. Total: {len(self.active_connections)}")
 
     def disconnect(self, websocket: WebSocket):
-        if websocket in self.active_connections:
-            self.active_connections.remove(websocket)
-        logger.info(f"❌ Client disconnected. Total: {len(self.active_connections)}")
+        with self._lock:
+            if websocket in self.active_connections:
+                self.active_connections.remove(websocket)
+            logger.info(f"❌ Client disconnected. Total: {len(self.active_connections)}")
 
     async def send_message(self, message: dict, websocket: WebSocket):
         try:
@@ -178,84 +185,119 @@ manager = ConnectionManager()
 # REAL-TIME STREAMING: Monitor Crew Execution
 # ═══════════════════════════════════════════════════════════════
 
-def run_crew_with_monitoring(question: str, response_queue: queue.Queue):
+def run_crew_with_monitoring(question: str, response_queue: asyncio.Queue, main_loop):
     """
     Run CrewAI and monitor task completion in REAL-TIME
     Stream each agent's response immediately as it completes
     """
     logger.info(f"🔮 TRACE: Starting crew execution for question: {question[:50]}...")
-    metrics.total_requests += 1
+    with metrics.lock:
+        metrics.total_requests += 1
+    
+    # Use the main event loop passed from the WebSocket endpoint
+    loop = main_loop
     
     try:
         crew_instance = ChaosOracle7DeadlyPersonasCrew().crew()
-        
+
         # Track which tasks have been sent
         sent_tasks = set()
-        
+
+        # Create event for task notification
+        task_available_event = threading.Event()
+
         # Start crew in background thread
         crew_result = [None]  # Use list to allow modification in thread
-        
+
         def run_crew():
             try:
                 logger.info("🔮 TRACE: Crew kickoff started")
                 crew_result[0] = crew_instance.kickoff(inputs={'question': question})
                 logger.info("🔮 TRACE: Crew kickoff completed")
+                # Set event on final completion
+                task_available_event.set()
             except Exception as e:
                 logger.error(f"❌ ERROR: Crew execution failed: {e}")
-                response_queue.put(('error', None, str(e)))
-        
+                loop.call_soon_threadsafe(response_queue.put_nowait, ('error', None, str(e)))
+                # Set event on error completion
+                task_available_event.set()
+
         crew_thread = threading.Thread(target=run_crew, daemon=True)
         crew_thread.start()
-        
+
         # Monitor crew progress in real-time
         logger.info("👁️ TRACE: Starting real-time monitoring loop")
-        
-        while crew_thread.is_alive() or (crew_result[0] is None):
+
+        while crew_thread.is_alive():
             # Check if crew has task outputs available
             if hasattr(crew_instance, '_tasks') and hasattr(crew_instance, 'tasks'):
                 for idx, task in enumerate(crew_instance.tasks):
                     # Check if this task has output and hasn't been sent yet
                     if hasattr(task, 'output') and task.output and idx not in sent_tasks:
                         agent_name = NAME_MAPPING.get(str(task.agent).strip().lower(), str(task.agent))
-                        
+
                         logger.info(f"✅ TRACE: Agent '{agent_name}' completed (task {idx})")
                         metrics.end_agent(agent_name)
-                        metrics.total_responses += 1
-                        
+                        with metrics.lock:
+                            metrics.total_responses += 1
+
                         # Create task output object
                         class TaskOutput:
                             def __init__(self, agent, raw):
                                 self.agent = agent
                                 self.raw = raw
-                        
+
                         task_output = TaskOutput(task.agent, task.output.raw if hasattr(task.output, 'raw') else str(task.output))
-                        
+
                         # Send immediately!
-                        response_queue.put(('task', idx, task_output))
+                        loop.call_soon_threadsafe(response_queue.put_nowait, ('task', idx, task_output))
                         sent_tasks.add(idx)
-                        
+
                         logger.info(f"📡 TRACE: Streamed response from '{agent_name}' to frontend")
-            
-            time.sleep(0.2)  # Check every 200ms
+
+                        # Set event to notify task availability
+                        task_available_event.set()
+
+            # Use event-driven waiting instead of busy polling
+            task_available_event.wait(timeout=0.2)  # Wait for event or timeout
+            task_available_event.clear()  # Clear event after processing
         
         # Wait for thread to complete
         crew_thread.join(timeout=1)
-        
-        # If we still haven't sent all responses, send them now
+
+        # Final scan/flush of remaining outputs after loop completion
+        # Check for any late-set crew_result or remaining tasks
         if crew_result[0] and hasattr(crew_result[0], 'tasks_output'):
             for idx, task_output in enumerate(crew_result[0].tasks_output):
                 if idx not in sent_tasks:
                     agent_name = NAME_MAPPING.get(str(task_output.agent).strip().lower(), str(task_output.agent))
                     logger.info(f"📡 TRACE: Sending remaining response from '{agent_name}'")
-                    response_queue.put(('task', idx, task_output))
+                    loop.call_soon_threadsafe(response_queue.put_nowait, ('task', idx, task_output))
+                    sent_tasks.add(idx)
+
+        # Also check crew_instance for any remaining outputs that might not be in crew_result
+        if hasattr(crew_instance, '_tasks') and hasattr(crew_instance, 'tasks'):
+            for idx, task in enumerate(crew_instance.tasks):
+                if hasattr(task, 'output') and task.output and idx not in sent_tasks:
+                    agent_name = NAME_MAPPING.get(str(task.agent).strip().lower(), str(task.agent))
+                    logger.info(f"📡 TRACE: Final flush - sending remaining response from '{agent_name}'")
+
+                    # Create task output object
+                    class TaskOutput:
+                        def __init__(self, agent, raw):
+                            self.agent = agent
+                            self.raw = raw
+
+                    task_output = TaskOutput(task.agent, task.output.raw if hasattr(task.output, 'raw') else str(task.output))
+                    loop.call_soon_threadsafe(response_queue.put_nowait, ('task', idx, task_output))
                     sent_tasks.add(idx)
         
-        response_queue.put(('done', None, None))
+        loop.call_soon_threadsafe(response_queue.put_nowait, ('done', None, None))
         logger.info("✅ TRACE: All agents completed successfully")
         
     except Exception as e:
         logger.error(f"❌ ERROR: Crew execution error: {e}", exc_info=True)
-        response_queue.put(('error', None, str(e)))
+        loop.call_soon_threadsafe(response_queue.put_nowait, ('error', None, str(e)))
 
 # ═══════════════════════════════════════════════════════════════
 # API Endpoints
@@ -272,9 +314,11 @@ async def root():
 
 @app.get("/health")
 async def health_check():
+    with manager._lock:
+        active_connections_count = len(manager.active_connections)
     return {
         "status": "healthy",
-        "active_connections": len(manager.active_connections),
+        "active_connections": active_connections_count,
         "agents": AGENT_ORDER
     }
 
@@ -314,12 +358,15 @@ async def websocket_endpoint(websocket: WebSocket):
                 }, websocket)
                 
                 # Create queue for real-time streaming
-                response_queue = queue.Queue()
+                response_queue = asyncio.Queue()
+                
+                # Get the current event loop to pass to the monitoring thread
+                current_loop = asyncio.get_running_loop()
                 
                 # Start monitoring in background
                 monitor_thread = threading.Thread(
                     target=run_crew_with_monitoring,
-                    args=(user_question, response_queue),
+                    args=(user_question, response_queue, current_loop),
                     daemon=True
                 )
                 monitor_thread.start()
@@ -330,7 +377,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 while processing:
                     try:
-                        msg_type, idx, data = response_queue.get(timeout=0.5)
+                        msg_type, idx, data = await response_queue.get()
                         
                         if msg_type == 'task':
                             raw_agent_name = str(data.agent).strip()
@@ -377,7 +424,7 @@ async def websocket_endpoint(websocket: WebSocket):
                             }, websocket)
                             processing = False
                             
-                    except queue.Empty:
+                    except asyncio.TimeoutError:
                         await asyncio.sleep(0.1)
                     except Exception as e:
                         logger.error(f"❌ Error in streaming loop: {e}")

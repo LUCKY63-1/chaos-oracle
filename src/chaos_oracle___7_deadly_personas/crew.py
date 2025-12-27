@@ -36,9 +36,10 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/amazon/nova-2-lite-v1:free",
+                model="openrouter/nvidia/nemotron-nano-9b-v2:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
+                max_tokens=4000,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
             ),
         )
@@ -56,9 +57,10 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/amazon/nova-2-lite-v1:free",
+                model="openrouter/nvidia/nemotron-nano-9b-v2:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
+                max_tokens=4000,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
             ),
         )
@@ -76,9 +78,10 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/amazon/nova-2-lite-v1:free",
+                model="openrouter/nvidia/nemotron-nano-9b-v2:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
+                max_tokens=4000,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
             ),
         )
@@ -96,9 +99,10 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/amazon/nova-2-lite-v1:free",
+                model="openrouter/nvidia/nemotron-nano-9b-v2:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
+                max_tokens=4000,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
             ),
         )
@@ -116,9 +120,10 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/amazon/nova-2-lite-v1:free",
+                model="openrouter/nvidia/nemotron-nano-9b-v2:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
+                max_tokens=4000,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
             ),
         )
@@ -136,9 +141,10 @@ class ChaosOracle7DeadlyPersonasCrew:
             max_rpm=None,
             max_execution_time=None,
             llm=LLM(
-                model="openrouter/amazon/nova-2-lite-v1:free",
+                model="openrouter/nvidia/nemotron-nano-9b-v2:free",
                 base_url="https://openrouter.ai/api/v1",
                 temperature=0.7,
+                max_tokens=4000,
                 api_key=os.environ.get("OPENROUTER_API_KEY")
             ),
         )
@@ -206,3 +212,4 @@ class ChaosOracle7DeadlyPersonasCrew:
             json_schema = json.loads(f.read())
 
         return SchemaConverter.build(json_schema)
+

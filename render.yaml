@@ -5,7 +5,7 @@ services:
     buildCommand: pip install -r backend_requirements.txt && pip install crewai[litellm,tools] tavily-python
     startCommand: python backend_server.py
     envVars:
-      - key: OPENROUTER_API_KEY
+      - key: GROQ_API_KEY
         sync: false
       - key: TAVILY_API_KEY
         sync: false
