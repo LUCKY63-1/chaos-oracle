@@ -159,7 +159,7 @@ Agents with `allow_delegation=True` can:
    ```bash
    cp .env.example .env
    # Edit .env and add your API keys:
-   # - OPENROUTER_API_KEY (get from https://openrouter.ai/keys)
+   # - GROQ_API_KEY (get from https://openrouter.ai/keys)
    # - TAVILY_API_KEY (get from https://tavily.com)
    ```
 
@@ -292,7 +292,7 @@ Create a `.env` file in the project root:
 
 ```env
 # Required
-OPENROUTER_API_KEY=your_openrouter_api_key_here
+GROQ_API_KEY=your_GROQ_API_KEY_here
 TAVILY_API_KEY=your_tavily_api_key_here
 
 # Optional
